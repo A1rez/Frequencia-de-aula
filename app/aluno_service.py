@@ -71,3 +71,109 @@ def listar_alunos():
     conn.close()
 
     return alunos
+
+def buscar_aluno_por_id(aluno_id):
+
+    conn = sqlite3.connect(DATABASE_PATH)
+
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT
+            id,
+            nome,
+            sexo,
+            data_nascimento,
+            faixa,
+            graus,
+            data_ultima_graduacao,
+            observacoes,
+            ativo
+        FROM alunos
+        WHERE id = ?
+        """,
+        (aluno_id,)
+    )
+
+    aluno = cursor.fetchone()
+
+    conn.close()
+
+    return aluno
+
+def listar_alunos_ativos():
+
+    conn = sqlite3.connect(DATABASE_PATH)
+
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT
+            id,
+            nome,
+            faixa,
+            graus
+        FROM alunos
+        WHERE ativo = 1
+        ORDER BY nome
+        """
+    )
+
+    alunos = cursor.fetchall()
+
+    conn.close()
+
+    return alunos
+
+def desativar_aluno(aluno_id, motivo_saida):
+
+    conn = sqlite3.connect(DATABASE_PATH)
+
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        UPDATE alunos
+        SET
+            ativo = 0,
+            data_saida = DATE('now'),
+            motivo_saida = ?
+        WHERE id = ?
+        """,
+        (
+            motivo_saida,
+            aluno_id
+        )
+    )
+
+    conn.commit()
+
+    conn.close()
+
+    print(f"Aluno {aluno_id} desativado com sucesso.")
+
+def reativar_aluno(aluno_id):
+
+    conn = sqlite3.connect(DATABASE_PATH)
+
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        UPDATE alunos
+        SET
+            ativo = 1,
+            data_saida = NULL,
+            motivo_saida = NULL
+        WHERE id = ?
+        """,
+        (aluno_id,)
+    )
+
+    conn.commit()
+
+    conn.close()
+
+    print(f"Aluno {aluno_id} reativado com sucesso.")

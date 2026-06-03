@@ -1,5 +1,9 @@
-from database.database import criar_banco
+from app.aluno_service import listar_alunos
 
 
 if __name__ == "__main__":
-    criar_banco()
+
+    alunos = listar_alunos()
+
+    for aluno in alunos:
+        print(aluno)

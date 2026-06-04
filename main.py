@@ -1,12 +1,8 @@
-from app.aluno_service import (
-    buscar_aluno_por_id,
-    reativar_aluno
-)
+from app.aula_service import listar_aulas
 
 if __name__ == "__main__":
 
-    reativar_aluno(1)
+    aulas = listar_aulas()
 
-    aluno = buscar_aluno_por_id(1)
-
-    print(aluno)
+    for aula in aulas:
+        print(aula)

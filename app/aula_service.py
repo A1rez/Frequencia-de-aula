@@ -78,3 +78,27 @@ def buscar_aula_por_id(aula_id):
     conn.close()
 
     return aula
+
+def buscar_aula_por_data(data):
+
+    conn = sqlite3.connect(DATABASE_PATH)
+
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT
+            id,
+            data,
+            observacao
+        FROM aulas
+        WHERE data = ?
+        """,
+        (data,)
+    )
+
+    aula = cursor.fetchone()
+
+    conn.close()
+
+    return aula

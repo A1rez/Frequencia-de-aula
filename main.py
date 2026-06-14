@@ -1,8 +1,8 @@
-from app.aula_service import listar_aulas
+from app.presenca_service import listar_presencas_da_aula
 
 if __name__ == "__main__":
 
-    aulas = listar_aulas()
+    presencas = listar_presencas_da_aula(1)
 
-    for aula in aulas:
-        print(aula)
+    for presenca in presencas:
+        print(presenca)

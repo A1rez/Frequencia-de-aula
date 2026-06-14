@@ -14,6 +14,7 @@ def cadastrar_aluno(
     observacoes=""
 ):
     conn = sqlite3.connect(DATABASE_PATH)
+    conn.row_factory = sqlite3.Row
 
     cursor = conn.cursor()
 
@@ -51,6 +52,7 @@ def cadastrar_aluno(
 def listar_alunos():
 
     conn = sqlite3.connect(DATABASE_PATH)
+    conn.row_factory = sqlite3.Row
 
     cursor = conn.cursor()
 
@@ -75,6 +77,7 @@ def listar_alunos():
 def buscar_aluno_por_id(aluno_id):
 
     conn = sqlite3.connect(DATABASE_PATH)
+    conn.row_factory = sqlite3.Row
 
     cursor = conn.cursor()
 
@@ -105,6 +108,7 @@ def buscar_aluno_por_id(aluno_id):
 def listar_alunos_ativos():
 
     conn = sqlite3.connect(DATABASE_PATH)
+    conn.row_factory = sqlite3.Row
 
     cursor = conn.cursor()
 
@@ -130,6 +134,7 @@ def listar_alunos_ativos():
 def desativar_aluno(aluno_id, motivo_saida):
 
     conn = sqlite3.connect(DATABASE_PATH)
+    conn.row_factory = sqlite3.Row
 
     cursor = conn.cursor()
 
@@ -157,6 +162,7 @@ def desativar_aluno(aluno_id, motivo_saida):
 def reativar_aluno(aluno_id):
 
     conn = sqlite3.connect(DATABASE_PATH)
+    conn.row_factory = sqlite3.Row
 
     cursor = conn.cursor()
 

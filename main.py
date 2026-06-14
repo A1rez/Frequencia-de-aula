@@ -1,10 +1,9 @@
-from app.relatorio_service import (
-    listar_alunos_para_desativacao
-)
+from app.aluno_service import buscar_aluno_por_id
 
 if __name__ == "__main__":
 
-    alunos = listar_alunos_para_desativacao()
+    aluno = buscar_aluno_por_id(1)
 
-    for aluno in alunos:
-        print(aluno)
+    print(aluno[1])
+    print(aluno["faixa"])
+    print(aluno["graus"])

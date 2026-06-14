@@ -1,8 +1,10 @@
-from app.presenca_service import listar_presencas_da_aula
+from app.relatorio_service import (
+    listar_alunos_para_desativacao
+)
 
 if __name__ == "__main__":
 
-    presencas = listar_presencas_da_aula(1)
+    alunos = listar_alunos_para_desativacao()
 
-    for presenca in presencas:
-        print(presenca)
+    for aluno in alunos:
+        print(aluno)

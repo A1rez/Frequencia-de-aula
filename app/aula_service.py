@@ -9,6 +9,7 @@ def cadastrar_aula(
 ):
 
     conn = sqlite3.connect(DATABASE_PATH)
+    conn.row_factory = sqlite3.Row
 
     cursor = conn.cursor()
 
@@ -35,6 +36,7 @@ def cadastrar_aula(
 def listar_aulas():
 
     conn = sqlite3.connect(DATABASE_PATH)
+    conn.row_factory = sqlite3.Row
 
     cursor = conn.cursor()
 
@@ -58,6 +60,7 @@ def listar_aulas():
 def buscar_aula_por_id(aula_id):
 
     conn = sqlite3.connect(DATABASE_PATH)
+    conn.row_factory = sqlite3.Row
 
     cursor = conn.cursor()
 
@@ -82,6 +85,7 @@ def buscar_aula_por_id(aula_id):
 def buscar_aula_por_data(data):
 
     conn = sqlite3.connect(DATABASE_PATH)
+    conn.row_factory = sqlite3.Row
 
     cursor = conn.cursor()
 

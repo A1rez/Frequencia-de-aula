@@ -1,9 +1,11 @@
-from app.aluno_service import buscar_aluno_por_id
+from app.relatorio_service import (
+    participacao_por_dia_semana
+)
 
 if __name__ == "__main__":
 
-    aluno = buscar_aluno_por_id(1)
+    resultado = (
+        participacao_por_dia_semana()
+    )
 
-    print(aluno[1])
-    print(aluno["faixa"])
-    print(aluno["graus"])
+    print(resultado)

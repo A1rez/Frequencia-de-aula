@@ -1,0 +1,13 @@
+# Banco de dados local
+database/frequencia.db
+
+# Cache Python
+__pycache__/
+*.pyc
+
+# VS Code
+.vscode/
+
+# Ambientes virtuais
+venv/
+.venv/

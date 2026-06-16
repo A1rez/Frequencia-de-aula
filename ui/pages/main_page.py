@@ -1,5 +1,5 @@
 import flet as ft
-from ui.alunos_page import (
+from ui.pages.alunos_page import (
     alunos_view
 )
 
@@ -25,14 +25,14 @@ def mostrar_menu_principal(page):
             size=24
         ),
 
-        ft.ElevatedButton(
+        ft.Button(
             "Alunos",
             on_click=abrir_alunos
         ),
 
-        ft.ElevatedButton("Aulas"),
-        ft.ElevatedButton("Presenças"),
-        ft.ElevatedButton("Relatórios")
+        ft.Button("Aulas"),
+        ft.Button("Presenças"),
+        ft.Button("Relatórios")
     )
 
     page.update()

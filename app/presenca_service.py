@@ -10,6 +10,7 @@ def registrar_presenca(
 ):
 
     conn = sqlite3.connect(DATABASE_PATH)
+    conn.row_factory = sqlite3.Row
 
     cursor = conn.cursor()
 
@@ -40,6 +41,7 @@ def registrar_presenca(
 def listar_presencas():
 
     conn = sqlite3.connect(DATABASE_PATH)
+    conn.row_factory = sqlite3.Row
 
     cursor = conn.cursor()
 
@@ -63,6 +65,7 @@ def listar_presencas():
 def listar_presencas_da_aula(aula_id):
 
     conn = sqlite3.connect(DATABASE_PATH)
+    conn.row_factory = sqlite3.Row
 
     cursor = conn.cursor()
 
@@ -91,6 +94,7 @@ def listar_presencas_da_aula(aula_id):
 def listar_presencas_por_data(data):
 
     conn = sqlite3.connect(DATABASE_PATH)
+    conn.row_factory = sqlite3.Row
 
     cursor = conn.cursor()
 

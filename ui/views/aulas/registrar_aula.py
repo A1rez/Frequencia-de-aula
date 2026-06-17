@@ -1,5 +1,5 @@
 import flet as ft
-from datetime import date
+from datetime import date, datetime
 
 from database.config import DATABASE_PATH
 from app.aula_service import cadastrar_aula, buscar_aula_por_data
@@ -21,37 +21,87 @@ from ui.components.widgets import (
 class ViewRegistrarAula:
     def __init__(self, ctx, **kwargs):
         self.ctx = ctx
-        self.presencas: dict[int, str] = {}
+        self.presencas: dict = {}
         self.alunos = []
-        self.dropdowns: dict[int, ft.Dropdown] = {}
-        self.aviso_ref = ft.Ref[ft.Container]()
-        self.campo_data = input_data(valor=date.today().isoformat())
-        self.campo_obs  = input_texto(hint="Ex.: treino especial, competição…")
-
+        self.dropdowns: dict = {}
+        self.aviso_container = ft.Container(visible=False)
+        self._data_selecionada = date.today()
+        self.campo_obs = ft.TextField(
+            hint_text="Ex.: treino especial, competição…",
+            hint_style=ft.TextStyle(color=COR_TEXTO_SEC, size=13),
+            text_style=ft.TextStyle(color=COR_TEXTO, size=13),
+            border_color=COR_BORDA,
+            focused_border_color=COR_BORDA_FORTE,
+            border_radius=RAIO,
+            bgcolor=COR_FUNDO,
+            content_padding=ft.padding.symmetric(horizontal=10, vertical=8),
+        )
+ 
     def build(self):
         self.alunos = listar_alunos_ativos()
         for a in self.alunos:
             self.presencas[a["id"]] = "AUSENTE"
-
+ 
+        # Botão de data com ícone de calendário
+        self.data_btn_text = ft.Text(
+            self._data_selecionada.strftime("%d/%m/%Y"),
+            size=13,
+            color=COR_TEXTO,
+        )
+        self.data_btn = ft.Container(
+            content=ft.Row(
+                controls=[
+                    ft.Icon(name=ft.icons.CALENDAR_MONTH_OUTLINED, size=16, color=COR_TEXTO_SEC),
+                    self.data_btn_text,
+                ],
+                spacing=8,
+                tight=True,
+            ),
+            bgcolor=COR_FUNDO,
+            border=ft.border.all(0.5, COR_BORDA),
+            border_radius=RAIO,
+            padding=ft.padding.symmetric(horizontal=10, vertical=9),
+            on_click=self._abrir_calendario,
+            ink=True,
+        )
+ 
+        # DatePicker (adicionado ao overlay da page depois)
+        self.date_picker = ft.DatePicker(
+            value=datetime.combine(self._data_selecionada, datetime.min.time()),
+            first_date=datetime(2020, 1, 1),
+            last_date=datetime(2030, 12, 31),
+            on_change=self._on_data_change,
+        )
+ 
         lista_chamada = self._build_lista_chamada()
-
+ 
         return ft.Column(
             controls=[
-                ft.Container(ref=self.aviso_ref, visible=False),
-
-                # Cabeçalho da aula
+                self.aviso_container,
                 card(
                     ft.Row(
                         controls=[
-                            campo("Data da aula", self.campo_data),
-                            campo("Observação (opcional)", self.campo_obs),
+                            ft.Column(
+                                controls=[
+                                    ft.Text("Data da aula", size=11, weight=ft.FontWeight.W_500, color=COR_TEXTO_SEC),
+                                    self.data_btn,
+                                ],
+                                spacing=4,
+                                expand=True,
+                            ),
+                            ft.Column(
+                                controls=[
+                                    ft.Text("Observação (opcional)", size=11, weight=ft.FontWeight.W_500, color=COR_TEXTO_SEC),
+                                    self.campo_obs,
+                                ],
+                                spacing=4,
+                                expand=True,
+                            ),
                         ],
                         spacing=16,
                     ),
                     margem_baixo=16,
                 ),
-
-                # Lista de chamada
                 card(
                     ft.Column(
                         controls=[
@@ -67,7 +117,7 @@ class ViewRegistrarAula:
                                 content=btn(
                                     "Salvar chamada",
                                     on_click=self._salvar,
-                                    icone=ft.Icons.SAVE_OUTLINED,
+                                    icone=ft.icons.SAVE_OUTLINED,
                                     primario=True,
                                 ),
                                 alignment=ft.alignment.center_right,
@@ -81,7 +131,23 @@ class ViewRegistrarAula:
             spacing=0,
             expand=True,
         )
-
+ 
+    def _abrir_calendario(self, e):
+        # Adiciona o picker ao overlay se ainda não estiver lá
+        if self.date_picker not in e.page.overlay:
+            e.page.overlay.append(self.date_picker)
+        self.date_picker.open = True
+        e.page.update()
+ 
+    def _on_data_change(self, e):
+        if e.control.value:
+            self._data_selecionada = e.control.value.date() if hasattr(e.control.value, 'date') else e.control.value
+            self.data_btn_text.value = self._data_selecionada.strftime("%d/%m/%Y")
+            try:
+                e.page.update()
+            except Exception:
+                pass
+ 
     def _build_lista_chamada(self):
         linhas = []
         for a in self.alunos:
@@ -102,7 +168,7 @@ class ViewRegistrarAula:
                 on_change=lambda e, aid=a["id"]: self._on_status_change(aid, e.control.value),
             )
             self.dropdowns[a["id"]] = dd
-
+ 
             linha = ft.Container(
                 content=ft.Row(
                     controls=[
@@ -124,63 +190,52 @@ class ViewRegistrarAula:
                 border=ft.border.only(bottom=ft.BorderSide(0.5, COR_BORDA)),
             )
             linhas.append(linha)
-
+ 
         if linhas:
             linhas[-1].border = None
-
         return ft.Column(controls=linhas, spacing=0)
-
+ 
     def _on_status_change(self, aluno_id, status):
         self.presencas[aluno_id] = status
-
+ 
     def _marcar_todos(self, status):
         for aid, dd in self.dropdowns.items():
             dd.value = status
             self.presencas[aid] = status
-        self.dropdowns[list(self.dropdowns.keys())[0]].page.update()
-
+        if self.dropdowns:
+            list(self.dropdowns.values())[0].page.update()
+ 
     def _salvar(self, e):
-        data = self.campo_data.value.strip()
-        obs  = self.campo_obs.value.strip()
-
-        if not data:
-            self._mostrar_aviso("Informe a data da aula.", "perigo")
-            return
-
+        data_iso = self._data_selecionada.isoformat()
         try:
-            cadastrar_aula(data, obs)
-            aula = buscar_aula_por_data(data)
+            cadastrar_aula(data_iso, self.campo_obs.value.strip())
+            aula = buscar_aula_por_data(data_iso)
             aula_id = aula["id"]
-
             for aluno_id, status in self.presencas.items():
                 registrar_presenca(aluno_id, aula_id, status)
-
             self.campo_obs.value = ""
             for dd in self.dropdowns.values():
                 dd.value = "AUSENTE"
             for aid in self.presencas:
                 self.presencas[aid] = "AUSENTE"
-
             self._mostrar_aviso("Aula registrada com sucesso!", "sucesso")
             e.page.update()
-
         except Exception as ex:
             self._mostrar_aviso(f"Erro ao salvar: {ex}", "perigo")
-
+ 
     def _mostrar_aviso(self, msg, tipo):
-        from ui.components.widgets import alerta
-        aviso = alerta(msg, tipo)
-        aviso.visible = True
-        self.aviso_ref.current.content = aviso
-        self.aviso_ref.current.visible = True
-        self.aviso_ref.current.page.update()
-
-        import threading
+        self.aviso_container.content = alerta(msg, tipo)
+        self.aviso_container.visible = True
+        try:
+            self.aviso_container.page.update()
+        except Exception:
+            pass
+        import threading, time
         def esconder():
-            import time; time.sleep(3)
-            self.aviso_ref.current.visible = False
+            time.sleep(3)
+            self.aviso_container.visible = False
             try:
-                self.aviso_ref.current.page.update()
+                self.aviso_container.page.update()
             except Exception:
                 pass
         threading.Thread(target=esconder, daemon=True).start()

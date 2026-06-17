@@ -3,9 +3,13 @@ import flet as ft
 # Paleta de faixas
 FAIXA_CORES = {
     "Branca":  {"bg": "#F1EFE8", "texto": "#444441"},
+    "Cinza/ranco":   {"bg": "#B4B2A9", "texto": "#F1EFE8"},
     "Cinza":   {"bg": "#B4B2A9", "texto": "#2C2C2A"},
+    "Cinza/Preto":   {"bg": "#B4B2A9", "texto": "#000000"},
     "Amarela": {"bg": "#FAC775", "texto": "#633806"},
+    "Amarela/Preto": {"bg": "#FAC775", "texto": "#000000"},
     "Laranja": {"bg": "#F0997B", "texto": "#4A1B0C"},
+    "Laranja/Preto": {"bg": "#F0997B", "texto": "#000000"},
     "Verde":   {"bg": "#5DCAA5", "texto": "#04342C"},
     "Azul":    {"bg": "#378ADD", "texto": "#042C53"},
     "Roxa":    {"bg": "#7F77DD", "texto": "#26215C"},

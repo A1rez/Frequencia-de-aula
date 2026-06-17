@@ -1,11 +1,10 @@
-from app.relatorio_service import (
-    participacao_por_dia_semana
-)
+import flet as ft
+from ui.app import FrequenciaApp
 
-if __name__ == "__main__":
 
-    resultado = (
-        participacao_por_dia_semana()
-    )
+def main(page: ft.Page):
+    app = FrequenciaApp(page)
+    app.inicializar()
 
-    print(resultado)
+
+ft.app(target=main)

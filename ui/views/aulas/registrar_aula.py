@@ -40,7 +40,7 @@ class ViewRegistrarAula:
     def build(self):
         self.alunos = listar_alunos_ativos()
         for a in self.alunos:
-            self.presencas[a["id"]] = "AUSENTE"
+            self.presencas[a["id"]] = "FALTA"
  
         # Botão de data com ícone de calendário
         self.data_btn_text = ft.Text(
@@ -108,7 +108,7 @@ class ViewRegistrarAula:
                             secao_header(
                                 "Lista de chamada",
                                 acoes=[
-                                    btn("Todos ausentes",  on_click=lambda e: self._marcar_todos("AUSENTE"),  pequeno=True),
+                                    btn("Todos ausentes",  on_click=lambda e: self._marcar_todos("FALTA"),  pequeno=True),
                                     btn("Todos presentes", on_click=lambda e: self._marcar_todos("PRESENTE"), pequeno=True),
                                 ],
                             ),
@@ -152,11 +152,11 @@ class ViewRegistrarAula:
         linhas = []
         for a in self.alunos:
             dd = ft.Dropdown(
-                value="AUSENTE",
+                value="FALTA",
                 options=[
-                    ft.dropdown.Option("AUSENTE",     "Ausente"),
+                    ft.dropdown.Option("FALTA",     "Falta"),
                     ft.dropdown.Option("PRESENTE",    "Presente"),
-                    ft.dropdown.Option("JUSTIFICADO", "Justificado"),
+                    ft.dropdown.Option("JUSTIFICADA", "Justificado"),
                 ],
                 border_color=COR_BORDA,
                 focused_border_color=COR_BORDA_FORTE,

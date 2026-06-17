@@ -54,10 +54,10 @@ def calcular_frequencia_aluno(
         if status == "PRESENTE":
             presencas += 1
 
-        elif status == "FALTA":
+        elif status == "AUSENTE":
             faltas += 1
 
-        elif status == "JUSTIFICADA":
+        elif status == "JUSTIFICADO":
             justificadas += 1
 
     total_avaliado = presencas + faltas

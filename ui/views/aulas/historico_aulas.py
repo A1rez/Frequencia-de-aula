@@ -5,7 +5,7 @@ from app.aula_service import listar_aulas
 from app.presenca_service import listar_presencas_da_aula
 
 from ui.tema import (
-    COR_FUNDO, COR_FUNDO_SEC, COR_BORDA, COR_TEXTO, COR_TEXTO_SEC, RAIO_LG,
+    COR_FUNDO, COR_FUNDO_SEC, COR_BORDA, COR_TEXTO, COR_TEXTO_SEC, RAIO_LG, STATUS_CORES
 )
 from ui.components.widgets import (
     card, secao_header, badge_status, btn, input_texto,
@@ -14,6 +14,20 @@ from ui.components.widgets import (
 DIAS_PT = {0: "Segunda", 1: "Terça", 2: "Quarta",
            3: "Quinta",  4: "Sexta", 5: "Sábado", 6: "Domingo"}
 
+def _badge_count(count: int, status: str):
+    cores = STATUS_CORES.get(status, {})
+    return ft.Container(
+        content=ft.Text(
+            str(count),
+            size=12,
+            weight=ft.FontWeight.W_500,
+            color=cores.get("texto", "#444441"),
+        ),
+        bgcolor=cores.get("bg", "#F1EFE8"),
+        border=ft.border.all(0.5, cores.get("borda", COR_BORDA)),
+        border_radius=10,
+        padding=ft.padding.symmetric(horizontal=10, vertical=2),
+    )
 
 class ViewHistoricoAulas:
     def __init__(self, ctx, **kwargs):
@@ -99,9 +113,9 @@ class ViewHistoricoAulas:
                     controls=[
                         ft.Container(ft.Text(data_fmt, size=13, color=COR_TEXTO), width=90),
                         ft.Container(ft.Text(dia, size=13, color=COR_TEXTO_SEC), width=80),
-                        ft.Container(badge_status("PRESENTE") if pres else ft.Text("0", size=13, color=COR_TEXTO_SEC), width=90),
-                        ft.Container(badge_status("AUSENTE")  if aus  else ft.Text("0", size=13, color=COR_TEXTO_SEC), width=80),
-                        ft.Container(badge_status("JUSTIFICADO") if just else ft.Text("0", size=13, color=COR_TEXTO_SEC), width=100),
+                        ft.Container(_badge_count(pres, "PRESENTE"),    width=90),
+                        ft.Container(_badge_count(aus,  "AUSENTE"),     width=80),
+                        ft.Container(_badge_count(just, "JUSTIFICADO"), width=100),
                         ft.Container(
                             ft.Text(a["observacao"] or "—", size=12, color=COR_TEXTO_SEC, overflow=ft.TextOverflow.ELLIPSIS),
                             expand=True,

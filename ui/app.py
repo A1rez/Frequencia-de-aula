@@ -201,7 +201,7 @@ class FrequenciaApp:
             bgcolor=COR_FUNDO,
             border=ft.border.only(bottom=ft.BorderSide(0.5, COR_BORDA)),
             padding=ft.padding.symmetric(horizontal=24, vertical=14),
-            margin=ft.margin.only(bottom=20, left=-24, right=-24, top=-24),
+            margin=ft.margin.only(bottom=20),
         )
 
         view = self._get_view(rota, **kwargs)

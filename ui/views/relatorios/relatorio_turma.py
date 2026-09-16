@@ -18,6 +18,7 @@ from ui.components.widgets import (
     card, stat_card, badge_faixa, avatar,
     barra_horizontal, btn, divisor,
 )
+from ui.pdf_service import gerar_pdf_relatorio
 
 MESES = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
          "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
@@ -226,6 +227,17 @@ class ViewRelatorioTurma:
                     ),
                     margin=ft.margin.only(bottom=14),
                 ),
+                ft.Container(
+                    content=ft.Row(
+                        controls=[
+                            btn("Exportar PDF",
+                                on_click=lambda e: gerar_pdf_relatorio(stats, ranking, por_dia, meses_dados, idade_media, e.page),
+                                icone=ft.icons.PICTURE_AS_PDF_OUTLINED),
+                        ],
+                        alignment=ft.MainAxisAlignment.END,
+                    ),
+                    margin=ft.margin.only(bottom=12),
+        ),
                 stats_row,
                 ft.Container(height=16),
                 grafs_row,

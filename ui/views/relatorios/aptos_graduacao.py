@@ -1,6 +1,7 @@
 import flet as ft
 
 from app.relatorio_service import listar_aptos_graduacao
+from ui.pdf_service import gerar_pdf_aptos
 
 from ui.tema import (
     COR_FUNDO, COR_FUNDO_SEC, COR_BORDA, COR_TEXTO, COR_TEXTO_SEC, RAIO_LG,
@@ -102,6 +103,13 @@ class ViewAptosGraduacao:
         return ft.Column(
             controls=[
                 aviso,
+                ft.Container(
+                btn("Exportar PDF",
+                    on_click=lambda e: gerar_pdf_aptos(aptos, e.page),
+                    icone=ft.icons.PICTURE_AS_PDF_OUTLINED),
+                alignment=ft.alignment.center_right,
+                margin=ft.margin.only(bottom=12),
+            ),
                 card(
                     ft.Column(
                         controls=[

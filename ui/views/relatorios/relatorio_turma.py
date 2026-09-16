@@ -75,16 +75,27 @@ class ViewRelatorioTurma:
         )
 
         # ── Aulas por mês ──────────────────────────────────────────────────
-        max_mes = max(por_mes.values(), default=1)
-        barras_mes = ft.Column(
-            controls=[
-                barra_horizontal(
-                    MESES[int(mes.split("-")[1]) - 1] + " " + mes.split("-")[0][2:],
-                    val, max_mes
-                )
-                for mes, val in sorted(por_mes.items())[-8:]
-            ],
-            spacing=8,
+        meses_dados = sorted(por_mes.items())[-12:]   # últimos 12 meses
+        max_mes = max((v for _, v in meses_dados), default=1)
+        ALTURA_GRAFICO = 140
+
+        def barra_vertical(mes_key, val):
+            label = MESES[int(mes_key.split("-")[1]) - 1] + "\n" + mes_key.split("-")[0][2:]
+            fill_h = max(2, int(val / max_mes * ALTURA_GRAFICO)) if val > 0 else 0
+            return ft.Column(
+                controls=[
+                    ft.Text(str(val), size=10, color=COR_TEXTO_SEC, text_align=ft.TextAlign.CENTER),
+                    ft.Container(height=ALTURA_GRAFICO - fill_h),
+                    ft.Container(bgcolor=COR_PRIMARIA, border_radius=4, width=28, height=fill_h),
+                    ft.Text(label, size=9, color=COR_TEXTO_SEC, text_align=ft.TextAlign.CENTER, width=34),
+                ],
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                spacing=4,
+            )
+        barras_mes = ft.Row(
+            controls=[barra_vertical(mes, val) for mes, val in meses_dados],
+            alignment=ft.MainAxisAlignment.SPACE_EVENLY,
+            vertical_alignment=ft.CrossAxisAlignment.END,
         )
 
         grafs_row = ft.Row(
@@ -125,6 +136,8 @@ class ViewRelatorioTurma:
         # ── Ranking ────────────────────────────────────────────────────────
         ranking_linhas = []
         for i, r in enumerate(ranking, 1):
+            fill_w = max(1, int(r["frequencia"] * 1.2)) if r["frequencia"] > 0 else 0
+            freq_det = calcular_frequencia_ultimos_90_dias(r["id"])
             linha = ft.Container(
                 content=ft.Row(
                     controls=[
@@ -141,6 +154,30 @@ class ViewRelatorioTurma:
                             spacing=2,
                             expand=True,
                         ),
+                        # Contagens detalhadas
+                    ft.Row(
+                        controls=[
+                            ft.Container(
+                                ft.Text(str(freq_det["presencas"]), size=11,
+                                        weight=ft.FontWeight.W_500, color="#27500A"),
+                                bgcolor="#EAF3DE", border_radius=8,
+                                padding=ft.padding.symmetric(horizontal=7, vertical=2),
+                            ),
+                            ft.Container(
+                                ft.Text(str(freq_det["justificadas"]), size=11,
+                                        weight=ft.FontWeight.W_500, color="#633806"),
+                                bgcolor="#FAEEDA", border_radius=8,
+                                padding=ft.padding.symmetric(horizontal=7, vertical=2),
+                            ),
+                        ft.Container(
+                            ft.Text(str(freq_det["faltas"]), size=11,
+                                    weight=ft.FontWeight.W_500, color="#791F1F"),
+                            bgcolor="#FCEBEB", border_radius=8,
+                            padding=ft.padding.symmetric(horizontal=7, vertical=2),
+                        ),
+                    ],
+                    spacing=4,
+                ),
                         ft.Container(
                             content=ft.Container(
                                 bgcolor=COR_PRIMARIA,
